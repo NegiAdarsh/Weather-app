@@ -2,7 +2,15 @@ import React from 'react';
 import { Cloud, Droplets, Wind } from 'lucide-react';
 import WeatherImage from './WeatherImage';
 
-const CurrentWeather = ({ data }) => {
+const CurrentWeather = ({ data, unit }) => {
+  const convertTemperature = (temp) => {
+    if (unit === 'metric') {
+      return `${Math.round(temp)}°C`; // Celsius
+    } else {
+      return `${Math.round(temp + 273.15)}°K`; // Kelvin
+    }
+  };
+
   return (
     <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-3xl p-8 mb-8 shadow-lg">
       <div className="flex justify-between items-center">
@@ -12,8 +20,8 @@ const CurrentWeather = ({ data }) => {
           <p className="text-xl">{data.weather[0].description}</p>
         </div>
         <div className="text-right">
-          <p className="text-6xl font-bold">{Math.round(data.main.temp)}°C</p>
-          <p className="text-xl">Feels like {Math.round(data.main.feels_like)}°C</p>
+          <p className="text-6xl font-bold">{convertTemperature(data.main.temp)}</p>
+          <p className="text-xl">Feels like {convertTemperature(data.main.feels_like)}</p>
         </div>
       </div>
       <div className="mt-8 flex justify-between items-center">

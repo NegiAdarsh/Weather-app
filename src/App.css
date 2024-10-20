@@ -36,3 +36,36 @@
     transform: rotate(360deg);
   }
 }
+
+.suggestion-bubble {
+  background: rgba(255, 255, 255, 0.8);
+  border: 2px solid #4a90e2;
+  border-radius: 12px;
+  padding: 10px 15px;
+  margin: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+}
+
+.suggestion-bubble:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .suggestion-bubble {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .suggestion-bubble {
+    padding: 6px 10px;
+    font-size: 12px;
+    margin: 3px;
+  }
+}
+

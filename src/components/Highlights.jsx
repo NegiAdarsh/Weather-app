@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sunrise, Sunset, Eye, Droplets, Wind, Gauge, ClockAlert, ArrowUp, ArrowDown } from 'lucide-react';
+import { Sunrise, Sunset, Eye,ChartLine, Droplets, Wind, Gauge, ClockAlert, ArrowUp, ArrowDown } from 'lucide-react';
 
 const Highlights = ({ data }) => {
   const formatTime = (timestamp) => {
@@ -20,6 +20,7 @@ const Highlights = ({ data }) => {
     { icon: <ArrowUp size={24} />, title: 'Max Temp', value: `${data.main.temp_max}` },
     { icon: <ArrowDown size={24} />, title: 'Min Temp', value: `${data.main.temp_min}` },
     { icon: <ClockAlert size={24} />, title: 'Last Updated', value: `${time}` },
+    { icon: <ChartLine size ={24} />, title: 'Avg Temp', value: `${(data.main.temp_min + data.main.temp_max)/2}` },
     
   ];
 

@@ -1,8 +1,16 @@
 import React from 'react';
 import WeatherImage from './WeatherImage'; // Import the new component
 
-const WeeklyForecast = ({ data }) => {
+const WeeklyForecast = ({ data, unit }) => {
   const dailyData = data.list.filter((item, index) => index % 8 === 0).slice(0, 7);
+
+  const convertTemperature = (temp) => {
+    if (unit === 'metric') {
+      return `${Math.round(temp)}°C`; // Celsius
+    } else {
+      return `${Math.round(temp + 273.15)}°K`; // Kelvin
+    }
+  };
 
   return (
     <div className="bg-white rounded-3xl p-8 mb-8 shadow-lg">
@@ -19,7 +27,7 @@ const WeeklyForecast = ({ data }) => {
               </p>
               {/* Use the new WeatherImage component */}
               <WeatherImage description={description} icon={icon} />
-              <p className="text-xl font-bold text-gray-800 mt-2">{Math.round(day.main.temp)}°C</p>
+              <p className="text-xl font-bold text-gray-800 mt-2">{convertTemperature(day.main.temp)}</p>
               <p className="text-sm text-gray-600">{day.weather[0].main}</p>
             </div>
           );

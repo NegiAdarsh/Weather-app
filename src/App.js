@@ -1,12 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import CurrentWeather from './components/CurrentWeather';
 import Highlights from './components/Highlights';
 import WeeklyForecast from './components/WeeklyForecast';
 import HourlyForecast from './components/HourlyForecast';
+import './App.css';
 
 const API_KEY = 'e4ba4b05eee9251d041f4745a2222fce';
 const API_BASE_URL = 'https://api.openweathermap.org/data/2.5';
+
+// Suggested cities
+const suggestedCities = ['Delhi', 'Mumbai', 'Chennai', 'Bangalore', 'Kolkata', 'Hyderabad'];
 
 function App() {
   const [city, setCity] = useState('');
@@ -14,12 +18,14 @@ function App() {
   const [forecast, setForecast] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [intervalId, setIntervalId] = useState(null);
+  const [unit, setUnit] = useState('metric'); // State for temperature unit
 
-  const fetchWeatherData = async () => {
+  const fetchWeatherData = async (cityName) => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch(`${API_BASE_URL}/weather?q=${city}&units=metric&appid=${API_KEY}`);
+      const response = await fetch(`${API_BASE_URL}/weather?q=${cityName}&units=${unit}&appid=${API_KEY}`);
       if (!response.ok) {
         throw new Error('City not found');
       }
@@ -33,11 +39,11 @@ function App() {
     }
   };
 
-  const fetchForecastData = async () => {
+  const fetchForecastData = async (cityName) => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch(`${API_BASE_URL}/forecast?q=${city}&units=metric&appid=${API_KEY}`);
+      const response = await fetch(`${API_BASE_URL}/forecast?q=${cityName}&units=${unit}&appid=${API_KEY}`);
       if (!response.ok) {
         throw new Error('Forecast data not available');
       }
@@ -54,9 +60,43 @@ function App() {
   const handleSearch = (e) => {
     e.preventDefault();
     if (city.trim()) {
-      fetchWeatherData();
-      fetchForecastData();
+      fetchWeatherData(city);
+      fetchForecastData(city);
+
+      // Clear any existing interval
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+
+      // Set a new interval to fetch data every 5 minutes
+      const id = setInterval(() => {
+        fetchWeatherData(city);
+        fetchForecastData(city);
+      }, 300000); // 5 minutes in milliseconds
+
+      setIntervalId(id);
     }
+  };
+
+  // Clear the interval when the component unmounts
+  useEffect(() => {
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [intervalId]);
+
+  // Handle suggested city selection
+  const handleSuggestionClick = (suggestedCity) => {
+    setCity(suggestedCity);
+    fetchWeatherData(suggestedCity);
+    fetchForecastData(suggestedCity);
+  };
+
+  // Toggle temperature unit
+  const toggleUnit = () => {
+    setUnit((prevUnit) => (prevUnit === 'metric' ? 'standard' : 'metric'));
   };
 
   return (
@@ -86,7 +126,23 @@ function App() {
               </button>
             </div>
           </form>
-          
+
+          <div className="flex items-center justify-center mb-4">
+            <label className="mr-4 text-gray-700">Temperature Unit:</label>
+            <button
+              onClick={toggleUnit}
+              className={`px-4 py-2 rounded-full ${unit === 'metric' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-700'}`}
+            >
+              Celsius
+            </button>
+            <button
+              onClick={toggleUnit}
+              className={`px-4 py-2 rounded-full ${unit === 'standard' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-700'}`}
+            >
+              Kelvin
+            </button>
+          </div>
+
           {error && (
             <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-8 rounded" role="alert">
               <p className="font-bold">Error</p>
@@ -94,9 +150,25 @@ function App() {
             </div>
           )}
 
-          {weatherData && <CurrentWeather data={weatherData} />}
+          {/* Suggested cities section */}
+          <div className="mb-8">
+            <h2 className="text-lg font-bold">Popular Cities :</h2>
+            <div className="flex flex-wrap">
+              {suggestedCities.map((suggestedCity) => (
+                <button
+                  key={suggestedCity}
+                  onClick={() => handleSuggestionClick(suggestedCity)}
+                  className="suggestion-bubble"
+                >
+                  {suggestedCity}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {weatherData && <CurrentWeather data={weatherData} unit={unit} />}
           {weatherData && <Highlights data={weatherData} />}
-          {forecast && <WeeklyForecast data={forecast} />}
+          {forecast && <WeeklyForecast data={forecast} unit={unit} />}
           {forecast && <HourlyForecast data={forecast} />}
         </div>
       </div>
