@@ -1,5 +1,6 @@
 import React from 'react';
 import { Cloud, Droplets, Wind } from 'lucide-react';
+import WeatherImage from './WeatherImage';
 
 const CurrentWeather = ({ data }) => {
   return (
@@ -7,6 +8,7 @@ const CurrentWeather = ({ data }) => {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-4xl font-bold mb-2">{data.name}</h2>
+          <WeatherImage description={data.weather[0].description} icon={data.weather[0].icon} />
           <p className="text-xl">{data.weather[0].description}</p>
         </div>
         <div className="text-right">
