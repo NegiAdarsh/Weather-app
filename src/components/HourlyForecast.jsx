@@ -30,7 +30,7 @@ const HourlyForecast = ({ data }) => {
               alt={item.description}
               className="w-8 h-8"
             />
-            <p className="text-sm font-semibold text-gray-800">{item.temperature}°C</p>
+            <p className="text-sm font-semibold text-gray-800">{item.temperature}</p>
           </div>
         ))}
       </div>
@@ -43,7 +43,7 @@ const CustomTooltip = ({ active, payload, label }) => {
     return (
       <div className="bg-white border border-gray-200 p-4 rounded shadow-md">
         <p className="font-semibold text-gray-800">{label}</p>
-        <p className="text-blue-500">{`Temperature: ${payload[0].value}°C`}</p>
+        <p className="text-blue-500">{`Temperature: ${payload[0].value}`}</p>
         <p className="text-gray-600">{payload[0].payload.description}</p>
       </div>
     );

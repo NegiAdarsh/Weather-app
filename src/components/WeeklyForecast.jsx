@@ -8,7 +8,7 @@ const WeeklyForecast = ({ data, unit }) => {
     if (unit === 'metric') {
       return `${Math.round(temp)}°C`; // Celsius
     } else {
-      return `${Math.round(temp + 273.15)}°K`; // Kelvin
+      return `${Math.round(temp)}°K`; // Kelvin
     }
   };
 
