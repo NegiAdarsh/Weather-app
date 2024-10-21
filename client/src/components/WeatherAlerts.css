@@ -1,0 +1,89 @@
+.weather-alerts-container {
+    max-width: 800px; /* Limit width for larger screens */
+    margin: 0 auto; /* Center the container */
+    padding: 20px;
+    background-color: #f9f9f9; /* Light background color */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    display: flex;
+    flex-direction: column;
+}
+
+.welcome-message {
+    text-align: center;
+    font-size: 1.5em; /* Larger text */
+    margin-bottom: 20px;
+    color: #333; /* Dark text color */
+}
+
+.alerts-section, .add-alert-section {
+    margin-bottom: 20px; /* Spacing between sections */
+}
+
+.alerts-list {
+    display: grid; /* Use grid layout for alerts */
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Responsive card layout */
+    gap: 15px; /* Space between cards */
+}
+
+.alert-card {
+    background-color: #ffffff; /* White background for alert cards */
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s, box-shadow 0.2s; /* Smooth transitions for hover effects */
+    cursor: pointer; /* Change cursor to pointer on hover */
+}
+
+.alert-card:hover {
+    transform: translateY(-5px); /* Lift effect on hover */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Darker shadow on hover */
+}
+
+.alert-card h5 {
+    margin: 0 0 10px; /* Spacing for alert title */
+    color: #007bff; /* Alert title color */
+}
+
+.add-alert-button {
+    background-color: #007bff; /* Blue button */
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s; /* Transition for hover effect */
+}
+
+.add-alert-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+.alert-form input, .alert-form select {
+    width: 100%; /* Full width inputs */
+    padding: 10px;
+    margin: 5px 0; /* Spacing for inputs */
+    border: 1px solid #ccc;
+    border-radius: 5px; /* Rounded corners */
+}
+
+.error-message {
+    color: red; /* Red for errors */
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.delete-button {
+    background-color: #ff4d4d; /* Red color for delete button */
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s; /* Transition for hover effect */
+    margin-top: 10px; /* Spacing from other elements */
+}
+
+.delete-button:hover {
+    background-color: #cc0000; /* Darker red on hover */
+}

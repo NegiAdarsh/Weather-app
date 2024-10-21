@@ -11,6 +11,7 @@ import Register from './components/Register';
 import Profile from './components/Profile';
 import './App.css';
 import Navbar from './components/Navbar';
+import WeatherAlerts from './components/WeatherAlert';
 
 const API_KEY = 'e4ba4b05eee9251d041f4745a2222fce';
 const API_BASE_URL = 'https://api.openweathermap.org/data/2.5';
@@ -207,11 +208,13 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path='/weather-alerts' element={<WeatherAlerts/>} />
           </Routes>
         </div>
       </div>
     </Router>
   );
-} 
+}  
+
 
 export default App;

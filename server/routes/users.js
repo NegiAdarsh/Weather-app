@@ -63,7 +63,8 @@ router.get('/profile', authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.user).select('-password'); // Exclude the password field
     if (!user) return res.status(404).json({ success: false, msg: 'User not found' });
-
+    console.log(user);
+    
     res.json({ success: true, user });
   } catch (err) {
     console.error(err);
@@ -130,5 +131,99 @@ router.put('/updateHomeCity', authMiddleware, async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
+
+
+
+router.get('/weather-alerts', authMiddleware, async (req, res) => {
+  try {
+      const user = await User.findById(req.user.id);
+      if (!user) return res.status(404).json({ error: 'User not found' });
+      res.json({ alerts: user.weather_alerts });
+  } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch weather alerts' });
+  }
+});
+
+// Example route in Express
+router.get('/:id', authMiddleware, async (req, res) => {
+  try {
+      const user = await User.findById(req.params.id); // Fetch user by ID from the database
+      console.log("hello ");
+      
+      if (!user) return res.status(404).send('User not found');
+      res.json(user); // Send the complete user object
+  } catch (error) {
+      res.status(500).send('Server Error');
+  }
+});
+
+
+router.post('/addAlert', authMiddleware, async (req, res) => {
+  console.log("Received request to add alert");
+  
+  const { location, threshold_value, alert_type, remark } = req.body;
+
+  if (!location || !threshold_value || !alert_type) {
+    return res.status(400).json({ msg: 'Please provide all required fields' });
+  }
+
+  try {
+    // console.log(req.user);
+    
+    const userId = req.user;
+    console.log(`Adding alert for user: ${userId}`);
+
+    const alert = {
+      location,
+      threshold_value,
+      alert_type,
+      remark
+    };
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $push: { weather_alerts: alert } },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      console.log(`User not found: ${userId}`);
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    console.log(`Alert added successfully for user: ${userId}`);
+    res.json({ user: updatedUser });
+  } catch (error) {
+    console.error('Error adding alert:', error);
+    res.status(500).json({ msg: 'Server error', error: error.message });
+  }
+});
+
+router.delete('/deleteAlert', authMiddleware, async (req, res) => {
+  const { alertToDelete } = req.body;
+
+  if (!alertToDelete) {
+      return res.status(400).json({ msg: 'No alert specified' });
+  }
+
+  try {
+      const userId = req.user;
+      const updatedUser = await User.findByIdAndUpdate(
+          userId,
+          { $pull: { weather_alerts: alertToDelete } },
+          { new: true }
+      );
+
+      if (!updatedUser) {
+          return res.status(404).json({ msg: 'User not found' });
+      }
+
+      res.json({ user: updatedUser });
+  } catch (error) {
+      console.error('Error deleting alert:', error);
+      res.status(500).json({ msg: 'Server error', error: error.message });
+  }
+});
+
 
 module.exports = router;
