@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const {User,Violation} = require('../models/User')
 const router = express.Router();
 
 // Middleware to verify token
@@ -19,6 +19,52 @@ const authMiddleware = (req, res, next) => {
     res.status(401).json({ success: false, msg: 'Token is not valid' });
   }
 };
+
+
+
+router.get('/violations', authMiddleware,async (req, res) => {
+  // console.log(req.user.username);
+  
+  console.log("Fetching violations for user ID:", req.user); // Log user ID
+    try {
+        const violations = await Violation.find({ userId: req.user }); // Make sure this matches your model
+        console.log("Violations found:", violations);
+        res.json(violations);
+    } catch (error) {
+        console.error("Error fetching violations:", error);
+        res.status(500).json({ error: 'Failed to fetch violations' });
+    }
+});
+
+
+
+
+//post 
+router.post('/violations', authMiddleware, async (req, res) => {
+  try {
+      const { location, alertType, thresholdValue, recordedTemperature, recordedWindSpeed } = req.body;
+
+      // Create a new violation with the userId from the token
+      const newViolation = new Violation({
+          userId: req.user,  // req.user is set by the auth middleware
+          location,
+          alertType,
+          thresholdValue,
+          recordedTemperature,
+          recordedWindSpeed,
+          timestamp: new Date()  // Record the current timestamp
+      });
+
+      // Save the new violation to the database
+      await newViolation.save();
+
+      // Send the created violation back in the response
+      res.status(201).json(newViolation);
+  } catch (error) {
+      console.error('Error saving violation:', error);
+      res.status(500).json({ error: 'Failed to save violation' });
+  }
+});
 
 // Register route
 router.post('/register', async (req, res) => {
@@ -63,7 +109,7 @@ router.get('/profile', authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.user).select('-password'); // Exclude the password field
     if (!user) return res.status(404).json({ success: false, msg: 'User not found' });
-    console.log(user);
+    // console.log(user);
     
     res.json({ success: true, user });
   } catch (err) {
@@ -148,7 +194,7 @@ router.get('/weather-alerts', authMiddleware, async (req, res) => {
 router.get('/:id', authMiddleware, async (req, res) => {
   try {
       const user = await User.findById(req.params.id); // Fetch user by ID from the database
-      console.log("hello ");
+    //   console.log("hello ");
       
       if (!user) return res.status(404).send('User not found');
       res.json(user); // Send the complete user object
@@ -224,6 +270,7 @@ router.delete('/deleteAlert', authMiddleware, async (req, res) => {
       res.status(500).json({ msg: 'Server error', error: error.message });
   }
 });
+
 
 
 module.exports = router;

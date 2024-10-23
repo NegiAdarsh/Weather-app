@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './WeatherAlerts.css';
+import ViolationList from './ViolationList';
 
 const WeatherAlerts = () => {
     const navigate = useNavigate();
@@ -189,6 +190,7 @@ const WeatherAlerts = () => {
                     <button type="submit" className="add-alert-button">Add Alert</button>
                 </form>
             </div>
+            <ViolationList/>
         </div>
     );
 };

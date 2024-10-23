@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sunrise, Sunset, Eye,ChartLine, Droplets, Wind, Gauge, ClockAlert, ArrowUp, ArrowDown } from 'lucide-react';
+import { Sunrise, Sunset, Eye,ChartLine,  Wind, Gauge, ClockAlert, ArrowUp, ArrowDown } from 'lucide-react';
 
 const Highlights = ({ data }) => {
   const formatTime = (timestamp) => {

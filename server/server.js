@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
-
+const router = require('./routes/users');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -19,6 +19,6 @@ mongoose.connect(process.env.MONGO_URI, {
 .catch(err => console.error('MongoDB connection error:', err));
 
 // Routes
-app.use('/api/users', require('./routes/users'));
+app.use('/api/users',router );
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
