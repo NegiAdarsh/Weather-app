@@ -36,6 +36,8 @@ const WeatherAlerts = () => {
             const userId = decoded.id;
 
             const fetchUserDetails = async () => {
+                console.log(token);
+                
                 try {
                     const response = await fetch(`http://localhost:3001/api/users/${userId}`, {
                         method: 'GET',

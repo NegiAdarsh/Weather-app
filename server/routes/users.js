@@ -2,11 +2,13 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const {User,Violation} = require('../models/User')
+const { getWeatherData } = require('../services/weatherChecker');
 const router = express.Router();
 
 // Middleware to verify token
 const authMiddleware = (req, res, next) => {
   const token = req.header('x-auth-token');
+  
   if (!token) {
     return res.status(401).json({ success: false, msg: 'No token, authorization denied' });
   }
@@ -21,22 +23,18 @@ const authMiddleware = (req, res, next) => {
 };
 
 
-
 router.get('/violations', authMiddleware,async (req, res) => {
-  // console.log(req.user.username);
-  
-  console.log("Fetching violations for user ID:", req.user); // Log user ID
+  // console.log(req.user.username);  
+  // console.log("Fetching violations for user ID:", req.user); // Log user ID
     try {
         const violations = await Violation.find({ userId: req.user }); // Make sure this matches your model
-        console.log("Violations found:", violations);
+        // console.log("Violations found:", violations);
         res.json(violations);
     } catch (error) {
         console.error("Error fetching violations:", error);
         res.status(500).json({ error: 'Failed to fetch violations' });
     }
 });
-
-
 
 
 //post 
@@ -65,6 +63,26 @@ router.post('/violations', authMiddleware, async (req, res) => {
       res.status(500).json({ error: 'Failed to save violation' });
   }
 });
+
+//weather checking route
+
+// router.post('/check-weather', authMiddleware, async (req, res) => {
+//   const { location } = req.body; // Retrieve location from the request body
+//   if (!location) {
+//       return res.status(400).json({ error: 'Location is required' });
+//   }
+
+//   try {
+//       const weatherData = await getWeatherData(location); // Call the weather service
+//       res.json(weatherData); // Return the weather data
+//   } catch (error) {
+//       console.error('Error fetching weather data:', error);
+//       res.status(500).json({ error: 'Failed to fetch weather data' });
+//   }
+//   // return res.status(200).json({msg:`hello there ${location}  `})
+// });
+
+
 
 // Register route
 router.post('/register', async (req, res) => {
@@ -97,6 +115,8 @@ router.post('/login', async (req, res) => {
     if (!isMatch) return res.status(400).json({ success: false, msg: 'Invalid credentials' });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    console.log(token);
+    
     res.json({ success: true, token, user: { id: user._id, username: user.username, email: user.email } });
   } catch (err) {
     console.error(err);
@@ -110,7 +130,6 @@ router.get('/profile', authMiddleware, async (req, res) => {
     const user = await User.findById(req.user).select('-password'); // Exclude the password field
     if (!user) return res.status(404).json({ success: false, msg: 'User not found' });
     // console.log(user);
-    
     res.json({ success: true, user });
   } catch (err) {
     console.error(err);

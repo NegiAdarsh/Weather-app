@@ -10,6 +10,8 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
+
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
@@ -20,5 +22,7 @@ mongoose.connect(process.env.MONGO_URI, {
 
 // Routes
 app.use('/api/users',router );
+
+require('./services/weatherCheckScheduler');
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
