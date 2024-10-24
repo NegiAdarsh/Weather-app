@@ -88,5 +88,64 @@ The **Advanced Weather App** is a comprehensive weather monitoring system that p
 - **API Integration**: Integrates with the OpenWeatherMap API for accurate weather data.
 - **Data Processing**: Continuous monitoring and automatic checks for alert violations.
 
-## How to run 
+## How to Run
+
+This project consists of a client and a server. Follow the steps below to set up and run the application:
+
+### Client Setup
+
+1. **Navigate to the Client Directory**  
+   Open your terminal and run:
+   ```bash
+   cd client
+   ```
+
+2. **Install Dependencies**  
+   Execute the following command to install all required packages:
+   ```bash
+   npm install
+   ```
+
+3. **Start the Frontend**  
+   Launch the frontend application by running:
+   ```bash
+   npm start
+   ```
+   This will start the frontend part of the application at [http://localhost:3000](http://localhost:3000). You should see the UI of the app.
+
+### Server Setup
+
+1. **Navigate to the Server Directory**  
+   Open a new terminal window and run:
+   ```bash
+   cd server
+   ```
+
+2. **Install Dependencies**  
+   Install the necessary packages by running:
+   ```bash
+   npm install
+   ```
+
+3. **Create an Environment File**  
+   Create a `.env` file in the server directory and fill it with the following details:
+   ```plaintext
+   MONGO_URI=mongodb+srv://<your-mongo-uri>
+   JWT_SECRET=<your-jwt-secret>
+   PORT=3001
+   WEATHER_API_KEY=<your-weather-api-key>
+   ```
+   Make sure to replace `<your-mongo-uri>`, `<your-jwt-secret>`, and `<your-weather-api-key>` with your actual values.
+
+4. **Start the Server**  
+   Launch the server by executing:
+   ```bash
+   node server.js
+   ```
+   The server will run on the designated port (make sure it's set to **3001** to ensure it connects with the frontend).
+
+### Enjoy the App!
+
+Now that both the client and server are running, you can start using the application. Enjoy!
+
 
