@@ -46,29 +46,35 @@ const WeatherStats = () => {
   }, []);
 
   return (
-    <div className="weather-container"> {/* Updated class name */}
+    <div className="weather-container">
       {Object.entries(weatherData).map(([city, dates]) => (
-        <div className="weather-city-section" key={city}> {/* Updated class name */}
-          <h2 className="weather-city-title">{city}</h2> {/* Updated class name */}
+        <div className="weather-city-section" key={city}>
+          <h2 className="weather-city-title">{city}</h2>
           {Object.entries(dates).map(([date, details]) => (
-            <div className="weather-info-card" key={date}> {/* Updated class name */}
-              <p className="weather-detail-info">Date: {new Date(date).toLocaleDateString()}</p> {/* Updated class name */}
-              <p className="weather-detail-info">Avg Temperature: {details.averageTemperature} °C</p> {/* Updated class name */}
-              <p className="weather-detail-info">Max Temperature: {details.maximumTemperature} °C</p> {/* Updated class name */}
-              <p className="weather-detail-info">Min Temperature: {details.minimumTemperature} °C</p> {/* Updated class name */}
-              <p className="weather-detail-info">Condition: {details.dominantCondition}</p> {/* Updated class name */}
+            <div className="weather-info-card" key={date}>
+              <p className="weather-detail-info">Date: {new Date(date).toLocaleDateString()}</p>
+              <p className="weather-detail-info">Avg Temperature: {details.averageTemperature} °C</p>
+              <p className="weather-detail-info">Max Temperature: {details.maximumTemperature} °C</p>
+              <p className="weather-detail-info">Min Temperature: {details.minimumTemperature} °C</p>
+              <p className="weather-detail-info">Condition: {details.dominantCondition}</p>
               
+              {/* Display Humidity */}
+              <p className="weather-detail-info">Humidity: {details.averageHumidity} %</p> {/* Added Humidity */}
+              
+              {/* Display Wind Speed */}
+              <p className="weather-detail-info">Wind Speed: {details.averageWindSpeed} m/s</p> {/* Added Wind Speed */}
+
               {/* Display Weather Icon */}
               {details.iconUrl && (
                 <img 
                   src={details.iconUrl} 
                   alt="Weather Icon" 
-                  className="weather-icon-img" // Updated class name
+                  className="weather-icon-img"
                 />
               )}
               
               {/* Display Time */}
-              <p className="weather-detail-info">Last updated at: {new Date(details.timestamp).toLocaleTimeString()}</p> {/* Updated class name */}
+              <p className="weather-detail-info">Last updated at: {new Date(details.timestamp).toLocaleTimeString()}</p>
             </div>
           ))}
         </div>

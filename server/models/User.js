@@ -31,16 +31,17 @@ const UserSchema = new mongoose.Schema({
     violations: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Violation' }],
 });
 
-// Weather Data Schema
 const WeatherDataSchema = new mongoose.Schema({
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    location: { type: String, required: true },
-    averageTemperature: { type: Number },
-    maximumTemperature: { type: Number },
-    minimumTemperature: { type: Number },
-    dominantCondition: { type: String },
-    iconUrl: { type: String, required: true },
-    timestamp: { type: Date, default: Date.now },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Reference to the User
+    location: { type: String, required: true }, // Location name
+    averageTemperature: { type: Number, required: true }, // Average temperature
+    maximumTemperature: { type: Number, required: true }, // Maximum temperature
+    minimumTemperature: { type: Number, required: true }, // Minimum temperature
+    dominantCondition: { type: String, required: true }, // Dominant weather condition
+    iconUrl: { type: String, required: true }, // URL for the weather icon
+    averageHumidity: { type: Number, required: true }, // New field for average humidity
+    averageWindSpeed: { type: Number, required: true }, // New field for average wind speed
+    timestamp: { type: Date, default: Date.now }, // Timestamp of the weather entry
 });
 
 // Creating Models

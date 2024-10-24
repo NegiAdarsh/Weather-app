@@ -19,8 +19,10 @@ const WeatherDataSchema = new mongoose.Schema({
     minimumTemperature: { type: Number, required: true }, // Minimum temperature
     dominantCondition: { type: String, required: true }, // Dominant weather condition
     iconUrl: { type: String, required: true }, // URL for the weather icon
+    averageHumidity: { type: Number, required: true }, // New field for average humidity
+    averageWindSpeed: { type: Number, required: true }, // New field for average wind speed
     timestamp: { type: Date, default: Date.now }, // Timestamp of the weather entry
-  });
+});
 
 // User Schema
 const UserSchema = new mongoose.Schema({

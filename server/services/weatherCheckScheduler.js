@@ -80,6 +80,8 @@ const recordDailyWeather = async () => {
                         minimumTemperature: weatherData.main.temp_min,
                         dominantCondition: weatherData.weather[0].main,
                         iconUrl: `http://openweathermap.org/img/wn/${weatherData.weather[0].icon}.png`,
+                        averageHumidity: weatherData.main.humidity, // Add humidity
+                        averageWindSpeed: weatherData.wind.speed, // Add wind speed
                         timestamp: new Date(), // Store the timestamp for the entry
                     });
 
@@ -92,6 +94,7 @@ const recordDailyWeather = async () => {
         console.error('Error recording daily weather data:', error);
     }
 };
+
 
 // Schedule the cron job to check weather alerts every 10 minutes
 cron.schedule('*/10 * * * *', checkWeatherAlerts);

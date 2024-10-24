@@ -174,15 +174,12 @@ router.post('/addCity', authMiddleware, async (req, res) => {
 
       // Fetch and store weather data for the city
       const weatherData = await getWeatherData(city); // Call the weather service
-      // console.log(weatherData);
       
-
       // Construct the icon URL (Assuming you're using OpenWeatherMap)
       const iconCode = weatherData.weather[0].icon;
-      // console.log(iconCode);
-      
       const iconUrl = `http://openweathermap.org/img/wn/${iconCode}.png`;
 
+      // Create the weather entry with humidity and wind speed
       const weatherEntry = {
         userId: req.user, // Get user ID from the authenticated user
         location: city,
@@ -191,6 +188,8 @@ router.post('/addCity', authMiddleware, async (req, res) => {
         minimumTemperature: weatherData.main.temp_min,
         dominantCondition: weatherData.weather[0].main,
         iconUrl,  // Include the weather icon URL
+        averageHumidity: weatherData.main.humidity, // Add humidity
+        averageWindSpeed: weatherData.wind.speed, // Add wind speed
       };
 
       await WeatherData.create(weatherEntry);
@@ -204,26 +203,39 @@ router.post('/addCity', authMiddleware, async (req, res) => {
 });
 
 
+
 // Remove a city from searched locations and delete associated weather data
 router.delete('/removeCity', authMiddleware, async (req, res) => {
   try {
     const { city } = req.body;
     const user = await User.findById(req.user);
+    
+    // Check if the user exists
     if (!user) return res.status(404).json({ success: false, msg: 'User not found' });
 
     // Remove city from searched_locations
-    user.searched_locations = user.searched_locations.filter((loc) => loc !== city);
-    await user.save();
+    const cityIndex = user.searched_locations.indexOf(city);
+    if (cityIndex === -1) {
+      return res.status(400).json({ success: false, msg: 'City not found in searched locations' });
+    }
+    user.searched_locations.splice(cityIndex, 1); // Remove the city from the array
+    await user.save(); // Save the updated user
 
     // Delete associated weather data for the city
-    await WeatherData.deleteOne({ userId: req.user, location: city });
+    const deleteResult = await WeatherData.deleteMany({ userId: req.user, location: city }); // Use deleteMany if there could be multiple entries
 
-    res.json({ success: true, user });
+    // Provide feedback on the deletion result
+    if (deleteResult.deletedCount === 0) {
+      return res.status(404).json({ success: false, msg: 'No weather data found for this city' });
+    }
+
+    res.json({ success: true, msg: `City ${city} removed successfully.`, user });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, msg: 'Server error' });
   }
 });
+
 
 router.put('/updateHomeCity', authMiddleware, async (req, res) => {
   try {
