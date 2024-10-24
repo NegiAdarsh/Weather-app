@@ -11,6 +11,17 @@ const ViolationSchema = new mongoose.Schema({
     timestamp: { type: Date, default: Date.now } // Timestamp of the violation
 });
 
+const WeatherDataSchema = new mongoose.Schema({
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Reference to the User
+    location: { type: String, required: true }, // Location name
+    averageTemperature: { type: Number, required: true }, // Average temperature
+    maximumTemperature: { type: Number, required: true }, // Maximum temperature
+    minimumTemperature: { type: Number, required: true }, // Minimum temperature
+    dominantCondition: { type: String, required: true }, // Dominant weather condition
+    iconUrl: { type: String, required: true }, // URL for the weather icon
+    timestamp: { type: Date, default: Date.now }, // Timestamp of the weather entry
+  });
+
 // User Schema
 const UserSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
@@ -31,9 +42,11 @@ const UserSchema = new mongoose.Schema({
     violations: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Violation' }] // Reference to Violation
 });
 
+
 // Creating Models
 const User = mongoose.model('User', UserSchema);
 const Violation = mongoose.model('Violation', ViolationSchema);
+const WeatherData = mongoose.model('WeatherData', WeatherDataSchema);
 
 // Exporting Models
-module.exports = { User, Violation };
+module.exports = { User, Violation, WeatherData };

@@ -1,0 +1,54 @@
+/* Container for the entire weather display */
+.weather-container {
+  display: flex; /* Use flexbox for layout */
+  flex-wrap: wrap; /* Allow wrapping to the next line */
+  justify-content: center; /* Center content horizontally */
+  padding: 20px; /* Padding around the container */
+}
+
+/* Section for individual cities */
+.weather-city-section {
+  margin: 15px; /* Space around each city section */
+  text-align: center; /* Center text */
+  flex: 1 0 200px; /* Allow flexibility while maintaining a minimum width */
+}
+
+/* Title for each city */
+.weather-city-title {
+  font-size: 1.5rem; /* Original size */
+  margin-bottom: 10px; /* Space below title */
+  color: #333; /* Dark text color */
+  font-weight: normal; /* Normal weight for consistency */
+}
+
+/* Card for displaying weather information */
+.weather-info-card {
+  background-color: #f1f1f1; /* Original background */
+  border-radius: 10px; /* Original radius */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Original shadow */
+  margin: 10px; /* Margin around each card */
+  padding: 20px; /* Padding inside the card */
+  max-width: 200px; /* Original max width */
+  flex-grow: 1; /* Allow card to grow */
+  text-align: center; /* Center text inside the card */
+  transition: transform 0.3s ease-in-out; /* Original transition */
+}
+
+/* Hover effect for weather cards */
+.weather-info-card:hover {
+  transform: translateY(-5px); /* Lift effect on hover */
+}
+
+/* Details of the weather */
+.weather-detail-info {
+  font-size: 1rem; /* Original size */
+  margin-bottom: 10px; /* Space below detail */
+  color: #555; /* Original color */
+}
+
+/* Weather icon styling */
+.weather-icon-img {
+  width: 50px; /* Original size */
+  height: 50px; /* Original size */
+  margin-top: 10px; /* Space above icon */
+}

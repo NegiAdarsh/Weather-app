@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const {User,Violation} = require('../models/User')
+const {User,Violation,WeatherData} = require('../models/User')
 const { getWeatherData } = require('../services/weatherChecker');
 const router = express.Router();
 
@@ -21,6 +21,19 @@ const authMiddleware = (req, res, next) => {
     res.status(401).json({ success: false, msg: 'Token is not valid' });
   }
 };
+
+router.get('/stats', authMiddleware, async (req, res) => {
+  // console.log("hello");
+  
+  try {
+      const weatherStats = await WeatherData.find({ userId: req.user }); // Fetch user's weather entries
+      res.json(weatherStats);
+  } catch (err) {
+    console.error("Error fetching Stats:", error);
+      res.status(500).json({ error: 'Failed to fetch weather stats' });
+  }
+});
+
 
 
 router.get('/violations', authMiddleware,async (req, res) => {
@@ -66,21 +79,30 @@ router.post('/violations', authMiddleware, async (req, res) => {
 
 //weather checking route
 
-// router.post('/check-weather', authMiddleware, async (req, res) => {
-//   const { location } = req.body; // Retrieve location from the request body
-//   if (!location) {
-//       return res.status(400).json({ error: 'Location is required' });
-//   }
+router.post('/check-weather', authMiddleware, async (req, res) => {
+  const { location } = req.body; 
+  if (!location) {
+      return res.status(400).json({ error: 'Location is required' });
+  }
 
-//   try {
-//       const weatherData = await getWeatherData(location); // Call the weather service
-//       res.json(weatherData); // Return the weather data
-//   } catch (error) {
-//       console.error('Error fetching weather data:', error);
-//       res.status(500).json({ error: 'Failed to fetch weather data' });
-//   }
-//   // return res.status(200).json({msg:`hello there ${location}  `})
-// });
+  try {
+      const weatherData = await getWeatherData(location); // Call the weather service
+      const weatherEntry = {
+        userId: req.user, // Get user ID from the authenticated user
+        location,
+        averageTemperature: weatherData.main.temp,
+        maximumTemperature: weatherData.main.temp_max,
+        minimumTemperature: weatherData.main.temp_min,
+        dominantCondition: weatherData.weather[0].main,
+    };
+    await WeatherData.create(weatherEntry);
+    res.json(weatherData); // Return the weather data
+  } catch (error) {
+      console.error('Error fetching weather data:', error);
+      res.status(500).json({ error: 'Failed to fetch weather data' });
+  }
+  // return res.status(200).json({msg:`hello there ${location}  `})
+});
 
 
 
@@ -137,7 +159,7 @@ router.get('/profile', authMiddleware, async (req, res) => {
   }
 });
 
-// Add a city to searched locations
+// Add a city to searched locations and store weather data
 router.post('/addCity', authMiddleware, async (req, res) => {
   try {
     const { city } = req.body;
@@ -149,6 +171,29 @@ router.post('/addCity', authMiddleware, async (req, res) => {
     if (!user.searched_locations.includes(city)) {
       user.searched_locations.push(city);
       await user.save();
+
+      // Fetch and store weather data for the city
+      const weatherData = await getWeatherData(city); // Call the weather service
+      // console.log(weatherData);
+      
+
+      // Construct the icon URL (Assuming you're using OpenWeatherMap)
+      const iconCode = weatherData.weather[0].icon;
+      // console.log(iconCode);
+      
+      const iconUrl = `http://openweathermap.org/img/wn/${iconCode}.png`;
+
+      const weatherEntry = {
+        userId: req.user, // Get user ID from the authenticated user
+        location: city,
+        averageTemperature: weatherData.main.temp,
+        maximumTemperature: weatherData.main.temp_max,
+        minimumTemperature: weatherData.main.temp_min,
+        dominantCondition: weatherData.weather[0].main,
+        iconUrl,  // Include the weather icon URL
+      };
+
+      await WeatherData.create(weatherEntry);
     }
 
     res.json({ success: true, user });
@@ -158,7 +203,8 @@ router.post('/addCity', authMiddleware, async (req, res) => {
   }
 });
 
-// Remove a city from searched locations
+
+// Remove a city from searched locations and delete associated weather data
 router.delete('/removeCity', authMiddleware, async (req, res) => {
   try {
     const { city } = req.body;
@@ -169,12 +215,16 @@ router.delete('/removeCity', authMiddleware, async (req, res) => {
     user.searched_locations = user.searched_locations.filter((loc) => loc !== city);
     await user.save();
 
+    // Delete associated weather data for the city
+    await WeatherData.deleteOne({ userId: req.user, location: city });
+
     res.json({ success: true, user });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, msg: 'Server error' });
   }
 });
+
 router.put('/updateHomeCity', authMiddleware, async (req, res) => {
   try {
     const { homeCity } = req.body;

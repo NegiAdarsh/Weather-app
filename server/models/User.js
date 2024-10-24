@@ -2,13 +2,13 @@ const mongoose = require('mongoose');
 
 // Violation Schema
 const ViolationSchema = new mongoose.Schema({
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Link to the User
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     location: { type: String, required: true },
     alertType: { type: String, required: true },
     thresholdValue: { type: Number, required: true },
     recordedTemperature: { type: Number, required: true },
     recordedWindSpeed: { type: Number, required: true },
-    timestamp: { type: Date, default: Date.now } // Timestamp of the violation
+    timestamp: { type: Date, default: Date.now },
 });
 
 // User Schema
@@ -28,12 +28,25 @@ const UserSchema = new mongoose.Schema({
         remark: { type: String },
     }],
     searched_locations: [String],
-    violations: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Violation' }] // Reference to Violation
+    violations: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Violation' }],
+});
+
+// Weather Data Schema
+const WeatherDataSchema = new mongoose.Schema({
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    location: { type: String, required: true },
+    averageTemperature: { type: Number },
+    maximumTemperature: { type: Number },
+    minimumTemperature: { type: Number },
+    dominantCondition: { type: String },
+    iconUrl: { type: String, required: true },
+    timestamp: { type: Date, default: Date.now },
 });
 
 // Creating Models
 const User = mongoose.model('User', UserSchema);
 const Violation = mongoose.model('Violation', ViolationSchema);
+const WeatherData = mongoose.model('WeatherData', WeatherDataSchema);
 
 // Exporting Models
-module.exports = { User, Violation };
+module.exports = { User, Violation, WeatherData };

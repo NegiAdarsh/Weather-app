@@ -12,6 +12,7 @@ import Profile from './components/Profile';
 import './App.css';
 import Navbar from './components/Navbar';
 import WeatherAlerts from './components/WeatherAlert';
+import WeatherStats from './components/WeatherStats';
 
 const API_KEY = 'e4ba4b05eee9251d041f4745a2222fce';
 const API_BASE_URL = 'https://api.openweathermap.org/data/2.5';
@@ -159,7 +160,7 @@ function App() {
                     <div className="flex space-x-2">
                       <button
                         onClick={() => handleUnitChange('metric')}
-                        className={`px-4 py-2 rounded-full transition-colors ${
+                        className={`temp-button ${
                           unit === 'metric' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-700'
                         }`}
                       >
@@ -167,7 +168,7 @@ function App() {
                       </button>
                       <button
                         onClick={() => handleUnitChange('kelvin')}
-                        className={`px-4 py-2 rounded-full transition-colors ${
+                        className={`temp-button ${
                           unit === 'kelvin' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-700'
                         }`}
                       >
@@ -209,8 +210,10 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/profile" element={<Profile />} />
             <Route path='/weather-alerts' element={<WeatherAlerts/>} />
+            <Route path='/stats' element={<WeatherStats/>} />
+
           </Routes>
-        </div>
+        </div> 
       </div>
     </Router>
   );
